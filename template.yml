@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'Lyi cloudformation learn'
+Resources:
+  LyiServiceFunction1:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: functions/fun1.handler
+      Role: !GetAtt LyiServiceLambdaRole.Arn
+      Runtime: nodejs8.10
+  LyiServiceFunction2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: functions/fun2.handler
+      Role: !GetAtt LyiServiceLambdaRole.Arn
+      Runtime: nodejs8.10
+  LyiGateWay:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: "LyiGateWay"
+      Description: "API used for Lyi couldformation test"
+      FailOnWarnings: true
+  LyiServiceLambdaRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: lyi-service-lambda-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
